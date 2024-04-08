@@ -19,23 +19,24 @@ const FactShort = () => {
   const [loading, setLoading] = useState(false);
   const [loaderText, setLoaderText] = useState("");
 
-  // use effect to list all files
-  useEffect(() => {
-    const getAllShorts = () => {
-      const allShorts = storage.listFiles(BUCKET_ID);
-      allShorts
-        .then((resp) => {
-          // console.log(resp.files);
-          const allFiles = resp.files;
-          // console.log(shortsFilesPreview);
-          setShortsPreview(allFiles);
-        })
-        .catch((err) => console.log(err));
-    };
-    return () => {
-      getAllShorts();
-    };
-  }, []);
+  // getAllShorts to list all files
+  const getAllShorts = () => {
+    setLoading(true);
+    setLoaderText("Fetching all shorts");
+    const allShorts = storage.listFiles(BUCKET_ID);
+    allShorts
+      .then((resp) => {
+        // console.log(resp.files);
+        const allFiles = resp.files;
+        // console.log(shortsFilesPreview);
+        setLoading(false);
+        setShortsPreview(allFiles);
+      })
+      .catch((err) => {
+        console.log(err);
+        setLoading(false);
+      });
+  };
   const handleShortFile = (e) => {
     const shortFile = e.target.files[0];
     if (!shortFile) {
@@ -85,7 +86,7 @@ const FactShort = () => {
       .catch((err) => console.log(err));
   };
   return (
-    <div>
+    <div className='container'>
       <div
         style={{
           display: "flex",
@@ -129,21 +130,27 @@ const FactShort = () => {
         </label>
       </div>
       {loading && <Loader loaderText={loaderText} />}
+      <button
+        className='btn btn-primary shadow-none mt-2 mb-2'
+        onClick={getAllShorts}
+      >
+        Get all Shorts
+      </button>
       {/* if Id render video */}
       <div
-        className='col-md-9'
+        className='col-md-12'
         style={{
           display: "flex",
           alignItems: "center",
-          gap: "5px",
           flexWrap: "wrap",
+          gap: "4px",
         }}
       >
         {shortsPreview?.length > 0 ? (
           <>
             {shortsPreview.map((short, i) => {
               return (
-                <div key={i}>
+                <div key={i} className='col-md-4'>
                   <RenderVideo
                     // src={fileSrc.href}
                     name={short.name}

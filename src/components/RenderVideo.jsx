@@ -17,7 +17,7 @@ const RenderVideo = (props) => {
   // console.log(fileSrc.href);
   return (
     <div
-      className='col-md-12'
+      className='col-md-9'
       style={{
         display: "flex",
         alignItems: "center",
